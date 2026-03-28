@@ -17,12 +17,14 @@ import ProjectCard from "../components/ProjectCard";
 import ProjectFormModal from "../components/ProjectFormModal";
 import SectionHeading from "../components/SectionHeading";
 import StatsCard from "../components/StatsCard";
+import { useCurrency } from "../context/CurrencyContext";
 import { useToast } from "../context/ToastContext";
 import usePortfolioData from "../hooks/usePortfolioData";
 import { projectService } from "../services/api";
 
 const DashboardPage = () => {
   const { pushToast } = useToast();
+  const { formatCurrency, formatRate } = useCurrency();
   const { data, loading, loadPortfolio, derived } = usePortfolioData();
   const [modalOpen, setModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -102,7 +104,7 @@ const DashboardPage = () => {
             </p>
             <p className="mt-3 text-sm text-cyan-50/80">
               {spotlightProject
-                ? `Current effective rate: Rs ${spotlightProject.metrics.effectiveRate}/h`
+                ? `Current effective rate: ${formatRate(spotlightProject.metrics.effectiveRate)}`
                 : "Add a project and start logging time to unlock trend intelligence."}
             </p>
           </div>
@@ -128,14 +130,14 @@ const DashboardPage = () => {
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <StatsCard
           label="Total Earnings"
-          value={`Rs ${summary.totalEarnings || 0}`}
+          value={formatCurrency(summary.totalEarnings || 0)}
           hint="Projected revenue across the portfolio"
           tone="profit"
           icon={BadgeIndianRupee}
         />
         <StatsCard
           label="Avg Hourly Rate"
-          value={`Rs ${summary.averageHourlyRate || 0}/h`}
+          value={formatRate(summary.averageHourlyRate || 0)}
           hint="Average across all tracked projects"
           icon={ArrowUpRight}
         />
@@ -151,7 +153,7 @@ const DashboardPage = () => {
           value={summary.mostProfitableProject?.title || "N/A"}
           hint={
             summary.mostProfitableProject
-              ? `Rs ${summary.mostProfitableProject.effectiveRate}/h`
+              ? formatRate(summary.mostProfitableProject.effectiveRate)
               : "Waiting for project data"
           }
           tone="profit"

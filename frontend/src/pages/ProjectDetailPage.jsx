@@ -7,6 +7,7 @@ import CircularProgressCard from "../components/CircularProgressCard";
 import PageShell from "../components/PageShell";
 import SectionHeading from "../components/SectionHeading";
 import StatsCard from "../components/StatsCard";
+import { useCurrency } from "../context/CurrencyContext";
 import TimeLogForm from "../components/TimeLogForm";
 import TimerWidget from "../components/TimerWidget";
 import { useToast } from "../context/ToastContext";
@@ -17,6 +18,7 @@ const model = import.meta.env.VITE_OPENROUTER_MODEL || "openai/gpt-4o-mini";
 const ProjectDetailPage = () => {
   const { id } = useParams();
   const { pushToast } = useToast();
+  const { formatCurrency, formatRate } = useCurrency();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -114,11 +116,11 @@ const ProjectDetailPage = () => {
             <div className="mt-4 grid gap-4 md:grid-cols-2">
               <div className="rounded-2xl bg-white/10 p-4">
                 <p className="text-sm text-cyan-100/80">Effective rate</p>
-                <p className="mt-2 text-3xl font-semibold">Rs {metrics.effectiveRate}/h</p>
+                <p className="mt-2 text-3xl font-semibold">{formatRate(metrics.effectiveRate)}</p>
               </div>
               <div className="rounded-2xl bg-white/10 p-4">
                 <p className="text-sm text-cyan-100/80">Threshold</p>
-                <p className="mt-2 text-3xl font-semibold">Rs {metrics.thresholdRate}/h</p>
+                <p className="mt-2 text-3xl font-semibold">{formatRate(metrics.thresholdRate)}</p>
               </div>
             </div>
           </div>
@@ -142,13 +144,13 @@ const ProjectDetailPage = () => {
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <StatsCard
           label="Effective Rate"
-          value={`Rs ${metrics.effectiveRate}/h`}
+          value={formatRate(metrics.effectiveRate)}
           tone={metrics.profitabilityStatus === "profitable" ? "profit" : "danger"}
           icon={TrendingUp}
         />
         <StatsCard label="Total Hours" value={`${metrics.totalHours}h`} hint={`Billable ${metrics.billableHours}h`} icon={Clock3} />
         <StatsCard label="Non-Billable" value={`${metrics.nonBillableHours}h`} hint="Emails, calls, revisions, admin" tone="warn" icon={TriangleAlert} />
-        <StatsCard label="Project Value" value={`Rs ${metrics.price}`} hint={project.client} icon={BriefcaseBusiness} />
+        <StatsCard label="Project Value" value={formatCurrency(metrics.price)} hint={project.client} icon={BriefcaseBusiness} />
       </section>
 
       <section className="grid gap-6 xl:grid-cols-[1fr_1fr]">
@@ -168,13 +170,13 @@ const ProjectDetailPage = () => {
             <p className="text-sm uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">Quick Facts</p>
             <div className="mt-4 grid gap-3">
               <div className="rounded-2xl bg-slate-900/5 px-4 py-4 dark:bg-white/5">
-                Profit delta: <span className="font-semibold">Rs {metrics.profitDelta}/h</span>
+                Profit delta: <span className="font-semibold">{formatRate(metrics.profitDelta)}</span>
               </div>
               <div className="rounded-2xl bg-slate-900/5 px-4 py-4 dark:bg-white/5">
                 Scope creep: <span className="font-semibold">{metrics.scopeCreepDetected ? "Detected" : "Stable"}</span>
               </div>
               <div className="rounded-2xl bg-slate-900/5 px-4 py-4 dark:bg-white/5">
-                Estimated rate: <span className="font-semibold">Rs {metrics.estimatedRate}/h</span>
+                Estimated rate: <span className="font-semibold">{formatRate(metrics.estimatedRate)}</span>
               </div>
             </div>
           </div>

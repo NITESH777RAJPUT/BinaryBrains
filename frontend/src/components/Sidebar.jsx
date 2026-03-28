@@ -61,10 +61,11 @@ const Sidebar = ({ collapsed, onToggle }) => {
             <NavLink key={item.to} to={item.to}>
               {({ isActive }) => (
                 <motion.div
-                  whileHover={{ x: 4 }}
+                  whileHover={{ x: 6, scale: 1.01 }}
+                  transition={{ type: "spring", stiffness: 260, damping: 18 }}
                   className={`flex items-center gap-3 rounded-2xl px-4 py-3 transition ${
                     isActive
-                      ? "bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-lg"
+                      ? "bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-lg shadow-cyan-500/20"
                       : "text-slate-600 hover:bg-white/40 dark:text-slate-200 dark:hover:bg-white/10"
                   }`}
                 >
@@ -93,14 +94,16 @@ const Sidebar = ({ collapsed, onToggle }) => {
             </div>
           ) : null}
         </div>
-        <button
+        <motion.button
           type="button"
           onClick={handleLogout}
+          whileHover={{ x: 4 }}
+          whileTap={{ scale: 0.98 }}
           className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-semibold text-rose-600 transition hover:bg-rose-500/10 dark:text-rose-300"
         >
           <LogOut size={20} />
           {!collapsed ? <span>Logout</span> : null}
-        </button>
+        </motion.button>
       </div>
     </motion.aside>
   );

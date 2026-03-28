@@ -36,6 +36,7 @@ const Topbar = ({ onToggleSidebar, alertsCount = 0 }) => {
           type="button"
           onClick={toggleTheme}
           whileTap={{ scale: 0.95 }}
+          whileHover={{ scale: 1.02 }}
           className="rounded-full bg-slate-900 px-4 py-3 text-white transition hover:opacity-90 dark:bg-white dark:text-slate-900"
         >
           <span className="inline-flex items-center gap-2 text-sm font-semibold">
@@ -43,6 +44,7 @@ const Topbar = ({ onToggleSidebar, alertsCount = 0 }) => {
             {theme === "dark" ? "Light" : "Dark"}
           </span>
         </motion.button>
+        <motion.div whileHover={{ y: -2 }} transition={{ type: "spring", stiffness: 260, damping: 18 }}>
         <Link
           to="/profile"
           className="flex items-center gap-3 rounded-full border border-white/20 bg-white/60 px-3 py-2 dark:bg-slate-900/60"
@@ -59,6 +61,7 @@ const Topbar = ({ onToggleSidebar, alertsCount = 0 }) => {
             <p className="text-xs text-slate-500 dark:text-slate-400">View profile</p>
           </div>
         </Link>
+        </motion.div>
       </div>
     </header>
   );

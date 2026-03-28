@@ -3,6 +3,7 @@ import { useState } from "react";
 import AIInsightsPanel from "../components/AIInsightsPanel";
 import EmptyState from "../components/EmptyState";
 import PageShell from "../components/PageShell";
+import ReportPreviewModal from "../components/ReportPreviewModal";
 import SavedReportsSection from "../components/SavedReportsSection";
 import SectionHeading from "../components/SectionHeading";
 import StatsCard from "../components/StatsCard";
@@ -23,6 +24,7 @@ const AIInsightsPage = () => {
   const [error, setError] = useState("");
   const [infoMessage, setInfoMessage] = useState("");
   const [selectedReportId, setSelectedReportId] = useState("");
+  const [activeReport, setActiveReport] = useState(null);
 
   const selectedProject = data.projects.find((item) => item.project._id === selectedProjectId);
 
@@ -73,6 +75,7 @@ const AIInsightsPage = () => {
     setSelectedReportId(report.id);
     setSelectedProjectId(report.projectId);
     setInsights(report.insights);
+    setActiveReport(report);
     setError("");
     setInfoMessage("");
   };
@@ -81,6 +84,9 @@ const AIInsightsPage = () => {
     deleteReport(reportId);
     if (selectedReportId === reportId) {
       setSelectedReportId("");
+    }
+    if (activeReport?.id === reportId) {
+      setActiveReport(null);
     }
     pushToast({
       tone: "info",
@@ -146,6 +152,8 @@ const AIInsightsPage = () => {
         onView={handleViewReport}
         onDelete={handleDeleteReport}
       />
+
+      <ReportPreviewModal report={activeReport} isOpen={Boolean(activeReport)} onClose={() => setActiveReport(null)} />
     </PageShell>
   );
 };

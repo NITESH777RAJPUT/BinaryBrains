@@ -1,4 +1,5 @@
 import { Camera, Mail, PencilLine, Phone, Save, UserRound } from "lucide-react";
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import PageShell from "../components/PageShell";
 import SectionHeading from "../components/SectionHeading";
@@ -76,14 +77,19 @@ const ProfilePage = () => {
 
       <section className="grid gap-4 md:grid-cols-3">
         <StatsCard label="Name" value={user?.name || "Unknown"} hint="Primary display name" icon={UserRound} />
-        <StatsCard label="Email" value={user?.email || "Unknown"} hint="Connected to authentication" icon={Mail} />
+        <StatsCard label="Email" value={user?.email || "Unknown"} hint="Connected to authentication" icon={Mail} valueClassName="break-all text-[1.05rem] leading-7 md:text-2xl" />
         <StatsCard label="Phone" value={user?.phone || "Unknown"} hint="Visible in your profile" icon={Phone} />
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-[0.8fr_1.2fr]">
-        <div className="glass-panel rounded-[32px] p-6">
+      <section className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35 }}
+          className="glass-panel rounded-[32px] p-6"
+        >
           <p className="text-sm uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">Avatar</p>
-          <div className="mt-6 flex flex-col items-center">
+          <div className="mt-6 flex h-full flex-col items-center justify-center">
             {form.avatar ? (
               <img src={form.avatar} alt={form.name} className="h-40 w-40 rounded-full object-cover ring-4 ring-teal-500/20" />
             ) : (
@@ -97,9 +103,15 @@ const ProfilePage = () => {
               <input type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
             </label>
           </div>
-        </div>
+        </motion.div>
 
-        <form onSubmit={handleSave} className="glass-panel rounded-[32px] p-6">
+        <motion.form
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.05 }}
+          onSubmit={handleSave}
+          className="glass-panel rounded-[32px] p-6"
+        >
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="text-sm uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">Profile Form</p>
@@ -117,20 +129,20 @@ const ProfilePage = () => {
             </button>
           </div>
 
-          <div className="mt-6 grid gap-4 md:grid-cols-2">
+          <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
             {[
               ["name", "User Name"],
               ["email", "Email"],
               ["phone", "Phone Number"],
             ].map(([name, label]) => (
-              <label key={name} className="text-sm font-medium text-slate-700 dark:text-slate-200">
+              <label key={name} className="min-w-0 max-w-full overflow-hidden text-sm font-medium text-slate-700 dark:text-slate-200">
                 {label}
                 <input
                   name={name}
                   value={form[name]}
                   onChange={handleChange}
                   disabled={!isEditing}
-                  className="mt-2 w-full rounded-2xl border border-white/20 bg-white/70 px-4 py-3 text-slate-900 outline-none disabled:cursor-not-allowed disabled:opacity-70 dark:bg-slate-900/60 dark:text-white"
+                  className={`mt-2 w-full max-w-full rounded-2xl border border-white/20 bg-white/70 px-4 py-3 text-slate-900 outline-none disabled:cursor-not-allowed disabled:opacity-70 dark:bg-slate-900/60 dark:text-white ${name === "email" ? "break-all overflow-hidden text-ellipsis" : ""}`}
                 />
               </label>
             ))}
@@ -144,11 +156,10 @@ const ProfilePage = () => {
             <Save size={16} />
             {saving ? "Saving..." : "Save Changes"}
           </button>
-        </form>
+        </motion.form>
       </section>
     </PageShell>
   );
 };
 
 export default ProfilePage;
-

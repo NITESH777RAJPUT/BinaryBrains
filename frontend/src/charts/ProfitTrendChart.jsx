@@ -1,6 +1,10 @@
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { useCurrency } from "../context/CurrencyContext";
 
-const ProfitTrendChart = ({ data }) => (
+const ProfitTrendChart = ({ data }) => {
+  const { formatCurrency } = useCurrency();
+
+  return (
   <div className="glass-panel rounded-[30px] p-5">
     <p className="text-sm uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">Profit Trend</p>
     <h3 className="mt-2 font-display text-2xl font-semibold text-slate-900 dark:text-white">
@@ -11,14 +15,14 @@ const ProfitTrendChart = ({ data }) => (
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="4 4" stroke="#94a3b833" />
           <XAxis dataKey="month" stroke="#94a3b8" />
-          <YAxis stroke="#94a3b8" />
-          <Tooltip />
+          <YAxis stroke="#94a3b8" tickFormatter={(value) => formatCurrency(value, { maximumFractionDigits: 0 })} />
+          <Tooltip formatter={(value) => [formatCurrency(value), "Earnings"]} />
           <Line type="monotone" dataKey="earnings" stroke="#14b8a6" strokeWidth={3} dot={{ r: 4 }} />
         </LineChart>
       </ResponsiveContainer>
     </div>
   </div>
-);
+  );
+};
 
 export default ProfitTrendChart;
-

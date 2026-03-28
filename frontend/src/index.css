@@ -35,7 +35,27 @@ body {
 }
 
 .glass-panel {
-  @apply border border-white/20 bg-white/65 shadow-glass backdrop-blur-xl dark:border-white/10 dark:bg-white/5;
+  @apply border border-white/10 bg-white/75 shadow-glass backdrop-blur-xl dark:bg-white/5;
+}
+
+.premium-dark-card {
+  @apply border border-white/10 bg-gradient-to-br from-slate-900 to-slate-800 shadow-xl backdrop-blur-xl;
+}
+
+.premium-input {
+  @apply mt-2 w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-white outline-none placeholder:text-slate-500 focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20;
+}
+
+.premium-label {
+  @apply text-sm font-medium text-gray-300;
+}
+
+.premium-switch {
+  @apply relative inline-flex h-7 w-12 items-center rounded-full border border-white/10 transition-colors duration-300;
+}
+
+.premium-switch-thumb {
+  @apply h-5 w-5 rounded-full bg-white shadow-lg transition-transform duration-300;
 }
 
 * {

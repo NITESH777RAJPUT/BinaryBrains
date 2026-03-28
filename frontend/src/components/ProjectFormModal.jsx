@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
+import { useCurrency } from "../context/CurrencyContext";
 
 const initialState = {
   title: "",
@@ -13,6 +14,7 @@ const initialState = {
 
 const ProjectFormModal = ({ isOpen, onClose, onSubmit, loading }) => {
   const [form, setForm] = useState(initialState);
+  const { currency, symbol, convertToBaseAmount } = useCurrency();
 
   const handleChange = (event) => {
     setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
@@ -22,9 +24,9 @@ const ProjectFormModal = ({ isOpen, onClose, onSubmit, loading }) => {
     event.preventDefault();
     await onSubmit({
       ...form,
-      price: Number(form.price),
+      price: Number(convertToBaseAmount(form.price)),
       estimatedHours: Number(form.estimatedHours),
-      thresholdRate: Number(form.thresholdRate),
+      thresholdRate: Number(convertToBaseAmount(form.thresholdRate)),
     });
     setForm(initialState);
   };
@@ -36,7 +38,7 @@ const ProjectFormModal = ({ isOpen, onClose, onSubmit, loading }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-40 flex items-center justify-center bg-slate-950/50 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-40 flex items-center justify-center bg-slate-900/90 p-4 backdrop-blur-md"
         >
           <motion.form
             initial={{ opacity: 0, y: 18, scale: 0.98 }}
@@ -44,20 +46,18 @@ const ProjectFormModal = ({ isOpen, onClose, onSubmit, loading }) => {
             exit={{ opacity: 0, y: 12, scale: 0.98 }}
             transition={{ type: "spring", stiffness: 220, damping: 20 }}
             onSubmit={handleSubmit}
-            className="glass-panel w-full max-w-2xl rounded-[32px] p-6"
+            className="w-full max-w-2xl rounded-[32px] border border-white/10 bg-slate-900/95 p-6 shadow-2xl backdrop-blur-md"
           >
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-sm uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">New Project</p>
-                <h3 className="mt-2 font-display text-3xl font-semibold text-slate-900 dark:text-white">
-                  Add a profitability baseline
-                </h3>
+                <p className="text-sm uppercase tracking-[0.3em] text-gray-300">New Project</p>
+                <h3 className="mt-2 font-display text-3xl font-semibold text-white">Add a profitability baseline</h3>
               </div>
               <motion.button
                 type="button"
                 whileTap={{ scale: 0.95 }}
                 onClick={onClose}
-                className="rounded-full bg-slate-900/5 px-4 py-2 text-sm font-semibold text-slate-700 dark:bg-white/10 dark:text-slate-100"
+                className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white"
               >
                 Close
               </motion.button>
@@ -68,29 +68,29 @@ const ProjectFormModal = ({ isOpen, onClose, onSubmit, loading }) => {
                 ["title", "Title"],
                 ["client", "Client Name"],
                 ["type", "Project Type"],
-                ["price", "Total Value"],
+                ["price", `Total Value (${currency} ${symbol})`],
                 ["estimatedHours", "Estimated Hours"],
-                ["thresholdRate", "Min Rate Threshold (Rs/hour)"],
+                ["thresholdRate", `Min Rate Threshold (${symbol}/hour)`],
               ].map(([name, label]) => (
-                <label key={name} className="text-sm font-medium text-slate-700 dark:text-slate-200">
+                <label key={name} className="premium-label">
                   {label}
                   <input
                     name={name}
                     value={form[name]}
                     onChange={handleChange}
                     required
-                    className="mt-2 w-full rounded-2xl border border-white/20 bg-white/70 px-4 py-3 text-slate-900 outline-none transition focus:border-teal-500 dark:bg-slate-900/60 dark:text-white"
+                    className="premium-input"
                   />
                 </label>
               ))}
 
-              <label className="text-sm font-medium text-slate-700 dark:text-slate-200">
+              <label className="premium-label">
                 Pricing Type
                 <select
                   name="pricingType"
                   value={form.pricingType}
                   onChange={handleChange}
-                  className="mt-2 w-full rounded-2xl border border-white/20 bg-white/70 px-4 py-3 text-slate-900 dark:bg-slate-900/60 dark:text-white"
+                  className="premium-input"
                 >
                   <option value="Fixed">Fixed</option>
                   <option value="Hourly">Hourly</option>

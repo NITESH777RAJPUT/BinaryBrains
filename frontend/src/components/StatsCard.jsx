@@ -1,27 +1,27 @@
 import { motion } from "framer-motion";
 
-const StatsCard = ({ label, value, hint, tone = "default", icon: Icon }) => {
+const StatsCard = ({ label, value, hint, tone = "default", icon: Icon, valueClassName = "" }) => {
   const toneMap = {
-    default: "from-white/80 via-white/35 to-cyan-100/30 dark:from-white/10 dark:via-white/5 dark:to-cyan-500/10",
-    profit: "from-emerald-400/35 via-teal-400/15 to-cyan-300/20 dark:from-emerald-500/20 dark:via-teal-500/10 dark:to-cyan-500/10",
-    danger: "from-rose-400/35 via-red-400/15 to-orange-200/20 dark:from-rose-500/20 dark:via-red-500/10 dark:to-orange-500/10",
-    warn: "from-amber-300/35 via-yellow-200/20 to-orange-100/20 dark:from-amber-500/20 dark:via-amber-400/10 dark:to-orange-400/10",
+    default: "from-slate-900 to-slate-800",
+    profit: "from-emerald-950 to-slate-900",
+    danger: "from-rose-950 to-slate-900",
+    warn: "from-amber-950 to-slate-900",
   };
 
   return (
     <motion.div
-      whileHover={{ y: -6, scale: 1.01 }}
-      transition={{ duration: 0.2 }}
-      className={`glass-panel rounded-[28px] bg-gradient-to-br ${toneMap[tone]} p-5`}
+      whileHover={{ y: -8, scale: 1.02, boxShadow: "0px 24px 60px rgba(15, 23, 42, 0.35)" }}
+      transition={{ type: "spring", stiffness: 240, damping: 18 }}
+      className={`premium-dark-card rounded-[28px] bg-gradient-to-br ${toneMap[tone]} p-5`}
     >
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-sm text-slate-500 dark:text-slate-300">{label}</p>
-          <p className="mt-3 font-display text-3xl font-semibold text-slate-900 dark:text-white">{value}</p>
-          {hint ? <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{hint}</p> : null}
+          <p className="text-sm uppercase tracking-[0.24em] text-gray-300">{label}</p>
+          <p className={`mt-3 font-display text-3xl font-semibold text-white ${valueClassName}`}>{value}</p>
+          {hint ? <p className="mt-2 text-sm text-gray-300">{hint}</p> : null}
         </div>
         {Icon ? (
-          <div className="rounded-2xl bg-white/50 p-3 text-slate-800 shadow-lg dark:bg-white/10 dark:text-white">
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-3 text-white shadow-xl backdrop-blur">
             <Icon size={20} />
           </div>
         ) : null}
