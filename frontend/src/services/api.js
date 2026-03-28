@@ -30,6 +30,12 @@ export const authService = {
       method: "POST",
       body: JSON.stringify(payload),
     }),
+  getProfile: () => request("/api/auth/me"),
+  updateProfile: (payload) =>
+    request("/api/auth/me", {
+      method: "PUT",
+      body: JSON.stringify(payload),
+    }),
 };
 
 export const projectService = {
@@ -48,6 +54,7 @@ export const timeLogService = {
       method: "POST",
       body: JSON.stringify(payload),
     }),
+  getAllLogs: () => request("/api/timelogs"),
   getProjectLogs: (projectId) => request(`/api/timelogs/${projectId}`),
 };
 
@@ -58,4 +65,3 @@ export const aiService = {
       body: JSON.stringify(payload),
     }),
 };
-

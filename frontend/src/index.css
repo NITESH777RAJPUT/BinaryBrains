@@ -42,6 +42,46 @@ body {
   @apply transition-colors duration-200;
 }
 
+.calendar-shell .react-calendar {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-family: inherit;
+}
+
+.calendar-shell .react-calendar__navigation button,
+.calendar-shell .react-calendar__month-view__weekdays__weekday,
+.calendar-shell .react-calendar__tile {
+  border-radius: 16px;
+}
+
+.calendar-shell .react-calendar__navigation button {
+  color: inherit;
+  min-height: 48px;
+}
+
+.calendar-shell .react-calendar__tile {
+  padding: 0.95rem 0.5rem;
+}
+
+.calendar-shell .react-calendar__tile--active {
+  background: rgb(20 184 166 / 0.85) !important;
+  color: white !important;
+}
+
+.calendar-shell .react-calendar__tile.calendar-productive {
+  background: rgb(16 185 129 / 0.2);
+}
+
+.calendar-shell .react-calendar__tile.calendar-low {
+  background: rgb(244 63 94 / 0.18);
+}
+
+.calendar-shell .react-calendar__tile.calendar-high-nonbillable {
+  background: rgb(245 158 11 / 0.25);
+}
+
 .gradient-title {
   @apply bg-gradient-to-r from-teal-400 via-emerald-300 to-amber-300 bg-clip-text text-transparent;
 }

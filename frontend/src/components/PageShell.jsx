@@ -4,7 +4,7 @@ const PageShell = ({ children }) => (
   <motion.div
     initial={{ opacity: 0, y: 18 }}
     animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.45, ease: "easeOut" }}
+    transition={{ type: "spring", stiffness: 130, damping: 18 }}
     className="space-y-8"
   >
     {children}
@@ -12,4 +12,3 @@ const PageShell = ({ children }) => (
 );
 
 export default PageShell;
-

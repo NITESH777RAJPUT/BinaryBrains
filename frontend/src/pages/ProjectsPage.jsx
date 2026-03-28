@@ -86,7 +86,10 @@ const ProjectsPage = () => {
           </label>
           {[["Client", clientFilter, setClientFilter, clients], ["Profitability", profitFilter, setProfitFilter, ["All", "profitable", "unprofitable"]], ["Project Type", typeFilter, setTypeFilter, types]].map(
             ([label, value, setter, options]) => (
-              <label key={label} className="rounded-2xl border border-white/20 bg-white/60 px-4 py-3 dark:bg-slate-900/60">
+              <label
+                key={label}
+                className="rounded-2xl border border-slate-300/80 bg-white px-4 py-3 shadow-sm dark:border-slate-700 dark:bg-slate-900"
+              >
                 <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">
                   <Filter size={14} />
                   {label}
@@ -94,10 +97,14 @@ const ProjectsPage = () => {
                 <select
                   value={value}
                   onChange={(event) => setter(event.target.value)}
-                  className="mt-2 w-full bg-transparent text-sm text-slate-900 outline-none dark:text-white"
+                  className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:ring-2 focus:ring-teal-500 dark:border-slate-600 dark:bg-slate-900 dark:text-white"
                 >
                   {options.map((option) => (
-                    <option key={option} value={option}>
+                    <option
+                      key={option}
+                      value={option}
+                      className="bg-white text-slate-900 hover:bg-teal-500 hover:text-white dark:bg-slate-900 dark:text-white"
+                    >
                       {option}
                     </option>
                   ))}

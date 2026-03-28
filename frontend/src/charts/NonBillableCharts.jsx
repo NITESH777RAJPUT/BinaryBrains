@@ -2,6 +2,7 @@ import {
   Bar,
   BarChart,
   Cell,
+  Legend,
   Pie,
   PieChart,
   ResponsiveContainer,
@@ -10,10 +11,19 @@ import {
   YAxis,
 } from "recharts";
 
-const COLORS = ["#06b6d4", "#f59e0b", "#ef4444", "#8b5cf6"];
+const CATEGORY_ORDER = ["Calls", "Emails", "Revisions", "Admin"];
+const CATEGORY_COLORS = {
+  Calls: "#06b6d4",
+  Emails: "#f59e0b",
+  Revisions: "#ef4444",
+  Admin: "#8b5cf6",
+};
 
 const NonBillableCharts = ({ breakdown }) => {
-  const data = Object.entries(breakdown || {}).map(([name, value]) => ({ name, value }));
+  const data = CATEGORY_ORDER.map((name) => ({
+    name,
+    value: breakdown?.[name] ?? 0,
+  }));
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
@@ -26,13 +36,28 @@ const NonBillableCharts = ({ breakdown }) => {
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie data={data} dataKey="value" nameKey="name" innerRadius={55} outerRadius={95}>
-                {data.map((entry, index) => (
-                  <Cell key={entry.name} fill={COLORS[index % COLORS.length]} />
+                {data.map((entry) => (
+                  <Cell key={entry.name} fill={CATEGORY_COLORS[entry.name]} />
                 ))}
               </Pie>
               <Tooltip />
+              <Legend />
             </PieChart>
           </ResponsiveContainer>
+        </div>
+        <div className="mt-4 grid grid-cols-2 gap-3">
+          {data.map((entry) => (
+            <div key={entry.name} className="rounded-2xl bg-slate-900/5 px-4 py-3 text-sm dark:bg-white/5">
+              <div className="flex items-center gap-2">
+                <span
+                  className="h-3 w-3 rounded-full"
+                  style={{ backgroundColor: CATEGORY_COLORS[entry.name] }}
+                />
+                <span className="text-slate-700 dark:text-slate-200">{entry.name}</span>
+              </div>
+              <p className="mt-2 font-semibold text-slate-900 dark:text-white">{entry.value}h</p>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -48,8 +73,8 @@ const NonBillableCharts = ({ breakdown }) => {
               <YAxis stroke="#94a3b8" />
               <Tooltip />
               <Bar dataKey="value" radius={[10, 10, 0, 0]}>
-                {data.map((entry, index) => (
-                  <Cell key={entry.name} fill={COLORS[index % COLORS.length]} />
+                {data.map((entry) => (
+                  <Cell key={entry.name} fill={CATEGORY_COLORS[entry.name]} />
                 ))}
               </Bar>
             </BarChart>
@@ -61,4 +86,3 @@ const NonBillableCharts = ({ breakdown }) => {
 };
 
 export default NonBillableCharts;
-

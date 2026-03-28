@@ -3,7 +3,7 @@ import TimeLog from "../models/TimeLog.js";
 import { calculateProjectMetrics } from "../utils/analytics.js";
 
 export const createTimeLog = async (req, res) => {
-  const { projectId, duration, type, notes, startedAt } = req.body;
+  const { projectId, duration, type, notes, startedAt, createdAt } = req.body;
 
   if (!projectId || !duration || !type) {
     return res.status(400).json({ message: "projectId, duration, and type are required" });
@@ -20,6 +20,7 @@ export const createTimeLog = async (req, res) => {
     type,
     notes,
     startedAt,
+    createdAt,
   });
 
   const updatedLogs = await TimeLog.find({ projectId }).sort({ createdAt: -1 });
@@ -48,3 +49,13 @@ export const getTimeLogsByProject = async (req, res) => {
   });
 };
 
+export const getAllTimeLogs = async (req, res) => {
+  const projects = await Project.find({ userId: req.user._id }).select("_id title client");
+  const projectIds = projects.map((project) => project._id);
+
+  const timeLogs = await TimeLog.find({ projectId: { $in: projectIds } })
+    .populate("projectId", "title client")
+    .sort({ createdAt: -1 });
+
+  return res.json({ timeLogs });
+};

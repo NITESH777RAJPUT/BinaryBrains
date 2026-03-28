@@ -3,7 +3,7 @@ import User from "../models/User.js";
 import generateToken from "../utils/generateToken.js";
 
 export const signup = async (req, res) => {
-  const { name, email, phone, password } = req.body;
+  const { name, email, phone, password, avatar } = req.body;
 
   if (!name || !email || !phone || !password) {
     return res.status(400).json({ message: "All fields are required" });
@@ -21,6 +21,7 @@ export const signup = async (req, res) => {
     email,
     phone,
     password: hashedPassword,
+    avatar,
   });
 
   return res.status(201).json({
@@ -30,6 +31,7 @@ export const signup = async (req, res) => {
       name: user.name,
       email: user.email,
       phone: user.phone,
+      avatar: user.avatar,
     },
   });
 };
@@ -58,7 +60,55 @@ export const login = async (req, res) => {
       name: user.name,
       email: user.email,
       phone: user.phone,
+      avatar: user.avatar,
     },
   });
 };
 
+export const getProfile = async (req, res) => {
+  const user = await User.findById(req.user._id).select("-password");
+
+  return res.json({
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      avatar: user.avatar,
+    },
+  });
+};
+
+export const updateProfile = async (req, res) => {
+  const { name, email, phone, avatar } = req.body;
+
+  const existingEmailUser = await User.findOne({
+    email,
+    _id: { $ne: req.user._id },
+  });
+
+  if (existingEmailUser) {
+    return res.status(400).json({ message: "Email is already in use" });
+  }
+
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      name,
+      email,
+      phone,
+      avatar,
+    },
+    { new: true, runValidators: true }
+  ).select("-password");
+
+  return res.json({
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      avatar: user.avatar,
+    },
+  });
+};

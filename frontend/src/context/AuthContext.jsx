@@ -30,6 +30,24 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("tracker_auth");
   };
 
+  const refreshProfile = async () => {
+    const data = await authService.getProfile();
+    setAuth((current) => ({
+      ...current,
+      user: data.user,
+    }));
+    return data.user;
+  };
+
+  const updateProfile = async (payload) => {
+    const data = await authService.updateProfile(payload);
+    setAuth((current) => ({
+      ...current,
+      user: data.user,
+    }));
+    return data.user;
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -39,6 +57,8 @@ export const AuthProvider = ({ children }) => {
         login,
         signup,
         logout,
+        refreshProfile,
+        updateProfile,
       }}
     >
       {children}
@@ -47,4 +67,3 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
-

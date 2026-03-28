@@ -1,6 +1,8 @@
 import { useState } from "react";
 import useTimer from "../hooks/useTimer";
 
+const TIMER_TYPES = ["Billable", "Calls", "Emails", "Revisions", "Admin"];
+
 const TimerWidget = ({ projectId, onLog }) => {
   const { seconds, isRunning, start, stop, reset } = useTimer();
   const [type, setType] = useState("Billable");
@@ -32,18 +34,27 @@ const TimerWidget = ({ projectId, onLog }) => {
             Start a live timer and save it straight to the project.
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <select
-            value={type}
-            onChange={(event) => setType(event.target.value)}
-            className="rounded-full border border-white/20 bg-white/70 px-4 py-3 text-slate-900 dark:bg-slate-900/60 dark:text-white"
-          >
-            <option>Billable</option>
-            <option>Emails</option>
-            <option>Calls</option>
-            <option>Revisions</option>
-            <option>Admin</option>
-          </select>
+        <div className="flex flex-col gap-4 md:items-end">
+          <div className="flex flex-wrap items-center gap-2">
+            {TIMER_TYPES.map((timerType) => {
+              const isActive = type === timerType;
+              return (
+                <button
+                  key={timerType}
+                  type="button"
+                  onClick={() => setType(timerType)}
+                  className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                    isActive
+                      ? "bg-teal-500 text-white shadow-lg shadow-teal-500/20"
+                      : "bg-gray-200 text-slate-800 hover:bg-teal-500 hover:text-white dark:bg-slate-700 dark:text-slate-100 dark:hover:bg-teal-500"
+                  }`}
+                >
+                  {timerType}
+                </button>
+              );
+            })}
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
           {!isRunning ? (
             <button type="button" onClick={start} className="rounded-full bg-teal-500 px-5 py-3 font-semibold text-white">
               Start
@@ -53,6 +64,7 @@ const TimerWidget = ({ projectId, onLog }) => {
               Stop & Save
             </button>
           )}
+          </div>
         </div>
       </div>
     </div>
@@ -60,4 +72,3 @@ const TimerWidget = ({ projectId, onLog }) => {
 };
 
 export default TimerWidget;
-
