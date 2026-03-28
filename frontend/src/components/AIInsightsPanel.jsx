@@ -1,4 +1,4 @@
-const AIInsightsPanel = ({ insights, loading, onAnalyze, error }) => (
+const AIInsightsPanel = ({ insights, loading, onAnalyze, onSaveReport, canSaveReport, error, infoMessage }) => (
   <div className="glass-panel rounded-[30px] p-5">
     <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
       <div>
@@ -11,13 +11,18 @@ const AIInsightsPanel = ({ insights, loading, onAnalyze, error }) => (
         type="button"
         onClick={onAnalyze}
         disabled={loading}
-        className="rounded-full bg-amber-400 px-5 py-3 font-semibold text-slate-950 transition hover:bg-amber-300 disabled:opacity-60"
+        className="rounded-full bg-amber-300 px-6 py-3 text-base font-semibold text-slate-950 shadow-lg shadow-amber-500/20 transition hover:bg-amber-200 disabled:cursor-not-allowed disabled:opacity-70"
       >
         {loading ? "Analyzing..." : "Generate Insights"}
       </button>
     </div>
 
     {error ? <div className="mt-4 rounded-2xl bg-rose-500/10 px-4 py-3 text-sm text-rose-700 dark:text-rose-200">{error}</div> : null}
+    {infoMessage ? (
+      <div className="mt-4 rounded-2xl bg-amber-400/15 px-4 py-3 text-sm text-amber-800 dark:text-amber-200">
+        {infoMessage}
+      </div>
+    ) : null}
 
     {insights ? (
       <div className="mt-5 grid gap-4 md:grid-cols-2">
@@ -55,6 +60,21 @@ const AIInsightsPanel = ({ insights, loading, onAnalyze, error }) => (
       <div className="mt-5 rounded-2xl border border-dashed border-white/20 px-4 py-6 text-sm text-slate-600 dark:text-slate-300">
         Generate an AI review to surface scope creep, pricing risks, and better project selection decisions.
       </div>
+    )}
+
+    {insights ? (
+      <div className="mt-5 flex justify-end">
+        <button
+          type="button"
+          onClick={onSaveReport}
+          disabled={!canSaveReport}
+          className="rounded-full bg-teal-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-teal-500/20 transition hover:bg-teal-400 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          Save Report
+        </button>
+      </div>
+    ) : (
+      null
     )}
   </div>
 );

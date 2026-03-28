@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
 const ProjectCard = ({ item }) => {
@@ -5,10 +6,11 @@ const ProjectCard = ({ item }) => {
   const profitable = metrics.profitabilityStatus === "profitable";
 
   return (
-    <Link
+    <motion.div whileHover={{ y: -8 }} transition={{ duration: 0.22 }}>
+      <Link
       to={`/projects/${project._id}`}
-      className="glass-panel block rounded-[30px] p-5 transition duration-300 hover:-translate-y-1 hover:shadow-2xl"
-    >
+      className="glass-panel block rounded-[30px] bg-gradient-to-br from-white/75 via-white/55 to-teal-100/35 p-5 transition duration-300 hover:shadow-2xl dark:from-white/8 dark:via-white/5 dark:to-teal-500/10"
+      >
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">{project.type}</p>
@@ -57,7 +59,8 @@ const ProjectCard = ({ item }) => {
           {metrics.alerts[0]}
         </div>
       ) : null}
-    </Link>
+      </Link>
+    </motion.div>
   );
 };
 

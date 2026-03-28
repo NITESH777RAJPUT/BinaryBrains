@@ -8,18 +8,25 @@
   color-scheme: dark;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   @apply font-body text-slate-900 antialiased dark:text-slate-100;
   background:
-    radial-gradient(circle at top left, rgba(20, 184, 166, 0.22), transparent 28%),
+    radial-gradient(circle at top left, rgba(20, 184, 166, 0.18), transparent 24%),
     radial-gradient(circle at top right, rgba(245, 158, 11, 0.16), transparent 24%),
-    linear-gradient(180deg, #eef4ff 0%, #dff1ea 48%, #edf3f8 100%);
+    radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.16), transparent 20%),
+    linear-gradient(180deg, #f8fbff 0%, #e8f2ff 48%, #f5fbf7 100%);
+  transition: background 0.35s ease, color 0.35s ease;
 }
 
 .dark body {
   background:
-    radial-gradient(circle at top left, rgba(20, 184, 166, 0.18), transparent 32%),
-    radial-gradient(circle at top right, rgba(244, 63, 94, 0.18), transparent 26%),
+    radial-gradient(circle at top left, rgba(20, 184, 166, 0.18), transparent 28%),
+    radial-gradient(circle at top right, rgba(244, 63, 94, 0.16), transparent 24%),
+    radial-gradient(circle at 30% 80%, rgba(99, 102, 241, 0.14), transparent 20%),
     linear-gradient(180deg, #020617 0%, #08111f 45%, #0f172a 100%);
 }
 
@@ -29,6 +36,10 @@ body {
 
 .glass-panel {
   @apply border border-white/20 bg-white/65 shadow-glass backdrop-blur-xl dark:border-white/10 dark:bg-white/5;
+}
+
+* {
+  @apply transition-colors duration-200;
 }
 
 .gradient-title {

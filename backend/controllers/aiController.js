@@ -4,6 +4,65 @@ import { calculateProjectMetrics } from "../utils/analytics.js";
 
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 
+const buildFallbackInsights = (project, metrics, timeLogs) => {
+  const revisionsHours = timeLogs
+    .filter((log) => log.type === "Revisions")
+    .reduce((sum, log) => sum + log.duration, 0);
+  const adminHours = timeLogs
+    .filter((log) => log.type === "Admin")
+    .reduce((sum, log) => sum + log.duration, 0);
+  const nonBillableShare =
+    metrics.totalHours > 0 ? (metrics.nonBillableHours / metrics.totalHours) * 100 : 0;
+
+  const risks = [];
+  const suggestions = [];
+
+  if (metrics.effectiveRate < metrics.thresholdRate) {
+    risks.push("Effective rate is below your minimum profitability threshold.");
+    suggestions.push("Raise pricing or tighten scope before taking on more work like this.");
+  }
+
+  if (revisionsHours >= Math.max(1, metrics.totalHours * 0.2)) {
+    risks.push("Revision time is taking a large share of the project.");
+    suggestions.push("Cap revision rounds in the proposal to protect margin.");
+  }
+
+  if (adminHours >= Math.max(1, metrics.totalHours * 0.15)) {
+    risks.push("Admin work is consuming meaningful time that is not directly billable.");
+    suggestions.push("Batch admin work or move recurring tasks into templates.");
+  }
+
+  if (metrics.scopeCreepDetected) {
+    risks.push("Recent non-billable growth suggests scope creep.");
+    suggestions.push("Pause and renegotiate deliverables before more hidden work accumulates.");
+  }
+
+  if (!risks.length) {
+    risks.push("No major profitability risk detected from the current project data.");
+  }
+
+  if (!suggestions.length) {
+    suggestions.push("Keep logging time consistently so future AI reviews stay accurate.");
+  }
+
+  return {
+    summary:
+      metrics.profitabilityStatus === "profitable"
+        ? `This project is currently profitable at Rs ${metrics.effectiveRate}/hour, with ${nonBillableShare.toFixed(0)}% of time going to non-billable work.`
+        : `This project is under pressure at Rs ${metrics.effectiveRate}/hour, below your Rs ${metrics.thresholdRate}/hour threshold.`,
+    risks,
+    suggestions,
+    pricingRecommendation:
+      metrics.effectiveRate < metrics.thresholdRate
+        ? `Consider increasing the project price by roughly 15-25% for similar ${project.type.toLowerCase()} work.`
+        : `Current pricing looks healthy; preserve margin by limiting extra revisions and admin overhead.`,
+    clientSignal:
+      metrics.profitabilityStatus === "profitable"
+        ? `${project.client} currently looks sustainable.`
+        : `${project.client} currently looks low-margin unless scope or pricing changes.`,
+  };
+};
+
 export const analyzeProjectData = async (req, res) => {
   const { projectId } = req.body;
 
@@ -76,6 +135,19 @@ ${JSON.stringify(
     const data = await response.json();
 
     if (!response.ok) {
+      if (response.status === 429) {
+        return res.json({
+          insights: buildFallbackInsights(project, metrics, timeLogs),
+          metrics,
+          meta: {
+            source: "fallback",
+            rateLimited: true,
+            message:
+              "OpenRouter rate limit reached. Showing local profitability insights instead.",
+          },
+        });
+      }
+
       return res.status(response.status).json({
         message: data?.error?.message || "OpenRouter request failed",
       });
@@ -99,6 +171,10 @@ ${JSON.stringify(
     return res.json({
       insights: parsed,
       metrics,
+      meta: {
+        source: "openrouter",
+        rateLimited: false,
+      },
     });
   } catch (error) {
     return res.status(500).json({
@@ -107,4 +183,3 @@ ${JSON.stringify(
     });
   }
 };
-
