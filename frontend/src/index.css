@@ -1,0 +1,48 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  @apply font-body text-slate-900 antialiased dark:text-slate-100;
+  background:
+    radial-gradient(circle at top left, rgba(20, 184, 166, 0.22), transparent 28%),
+    radial-gradient(circle at top right, rgba(245, 158, 11, 0.16), transparent 24%),
+    linear-gradient(180deg, #eef4ff 0%, #dff1ea 48%, #edf3f8 100%);
+}
+
+.dark body {
+  background:
+    radial-gradient(circle at top left, rgba(20, 184, 166, 0.18), transparent 32%),
+    radial-gradient(circle at top right, rgba(244, 63, 94, 0.18), transparent 26%),
+    linear-gradient(180deg, #020617 0%, #08111f 45%, #0f172a 100%);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.glass-panel {
+  @apply border border-white/20 bg-white/65 shadow-glass backdrop-blur-xl dark:border-white/10 dark:bg-white/5;
+}
+
+.gradient-title {
+  @apply bg-gradient-to-r from-teal-400 via-emerald-300 to-amber-300 bg-clip-text text-transparent;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body,
+  .dark body {
+    background: white !important;
+    color: black !important;
+  }
+}
