@@ -5,6 +5,7 @@ import connectDB from "./config/db.js";
 import aiRoutes from "./routes/aiRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import projectRoutes from "./routes/projectRoutes.js";
+import teamRoutes from "./routes/teamRoutes.js";
 import timeLogRoutes from "./routes/timeLogRoutes.js";
 
 dotenv.config();
@@ -25,6 +26,7 @@ app.get("/api/health", (_req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/team", teamRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/timelogs", timeLogRoutes);
 app.use("/api/ai", aiRoutes);

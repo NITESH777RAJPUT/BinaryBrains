@@ -8,6 +8,12 @@ const timeLogSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
     duration: {
       type: Number,
       required: true,
@@ -36,4 +42,3 @@ const timeLogSchema = new mongoose.Schema(
 );
 
 export default mongoose.model("TimeLog", timeLogSchema);
-

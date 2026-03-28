@@ -2,6 +2,16 @@ import bcrypt from "bcryptjs";
 import User from "../models/User.js";
 import generateToken from "../utils/generateToken.js";
 
+const serializeUser = (user) => ({
+  id: user._id,
+  name: user.name,
+  email: user.email,
+  phone: user.phone,
+  avatar: user.avatar,
+  teamId: user.teamId || null,
+  role: user.role || "member",
+});
+
 export const signup = async (req, res) => {
   const { name, email, phone, password, avatar } = req.body;
 
@@ -26,13 +36,7 @@ export const signup = async (req, res) => {
 
   return res.status(201).json({
     token: generateToken(user._id),
-    user: {
-      id: user._id,
-      name: user.name,
-      email: user.email,
-      phone: user.phone,
-      avatar: user.avatar,
-    },
+    user: serializeUser(user),
   });
 };
 
@@ -55,28 +59,14 @@ export const login = async (req, res) => {
 
   return res.json({
     token: generateToken(user._id),
-    user: {
-      id: user._id,
-      name: user.name,
-      email: user.email,
-      phone: user.phone,
-      avatar: user.avatar,
-    },
+    user: serializeUser(user),
   });
 };
 
 export const getProfile = async (req, res) => {
   const user = await User.findById(req.user._id).select("-password");
 
-  return res.json({
-    user: {
-      id: user._id,
-      name: user.name,
-      email: user.email,
-      phone: user.phone,
-      avatar: user.avatar,
-    },
-  });
+  return res.json({ user: serializeUser(user) });
 };
 
 export const updateProfile = async (req, res) => {
@@ -102,13 +92,5 @@ export const updateProfile = async (req, res) => {
     { new: true, runValidators: true }
   ).select("-password");
 
-  return res.json({
-    user: {
-      id: user._id,
-      name: user.name,
-      email: user.email,
-      phone: user.phone,
-      avatar: user.avatar,
-    },
-  });
+  return res.json({ user: serializeUser(user) });
 };

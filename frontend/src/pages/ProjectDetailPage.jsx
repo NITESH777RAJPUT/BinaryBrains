@@ -7,6 +7,7 @@ import CircularProgressCard from "../components/CircularProgressCard";
 import PageShell from "../components/PageShell";
 import SectionHeading from "../components/SectionHeading";
 import StatsCard from "../components/StatsCard";
+import { useAuth } from "../context/AuthContext";
 import { useCurrency } from "../context/CurrencyContext";
 import TimeLogForm from "../components/TimeLogForm";
 import TimerWidget from "../components/TimerWidget";
@@ -18,6 +19,7 @@ const model = import.meta.env.VITE_OPENROUTER_MODEL || "openai/gpt-4o-mini";
 const ProjectDetailPage = () => {
   const { id } = useParams();
   const { pushToast } = useToast();
+  const { user } = useAuth();
   const { formatCurrency, formatRate } = useCurrency();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -81,6 +83,7 @@ const ProjectDetailPage = () => {
   };
 
   const latestAlerts = useMemo(() => data?.metrics?.alerts || [], [data]);
+  const canEdit = !user?.teamId || user?.role !== "viewer";
 
   if (loading) {
     return <div className="glass-panel rounded-[30px] px-5 py-10 text-center">Loading project...</div>;
@@ -91,6 +94,19 @@ const ProjectDetailPage = () => {
   }
 
   const { project, metrics, timeLogs } = data;
+
+  const handleAssignmentChange = async (assignedTo) => {
+    try {
+      setSaving(true);
+      await projectService.updateAssignment(project._id, { assignedTo });
+      pushToast({ tone: "success", title: "Assignment updated", description: "Project ownership has been updated." });
+      await loadProject();
+    } catch (error) {
+      pushToast({ tone: "error", title: "Could not update assignment", description: error.message });
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <PageShell>
@@ -141,6 +157,31 @@ const ProjectDetailPage = () => {
         </div>
       </section>
 
+      <section className="glass-panel rounded-[30px] p-5">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-sm uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">Assignment</p>
+            <h3 className="mt-2 font-display text-2xl font-semibold text-slate-900 dark:text-white">
+              Project ownership
+            </h3>
+          </div>
+          <div className="min-w-[260px]">
+            <select
+              value={project.assignedTo?._id || ""}
+              onChange={(event) => handleAssignmentChange(event.target.value)}
+              disabled={!canEdit || saving}
+              className="w-full rounded-2xl border border-white/20 bg-white/70 px-4 py-3 text-sm text-slate-900 disabled:opacity-60 dark:bg-slate-900/60 dark:text-white"
+            >
+              {(data.teamMembers || []).map((member) => (
+                <option key={member._id || member.id} value={member._id || member.id}>
+                  {member.name} ({member.role})
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </section>
+
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <StatsCard
           label="Effective Rate"
@@ -154,8 +195,8 @@ const ProjectDetailPage = () => {
       </section>
 
       <section className="grid gap-6 xl:grid-cols-[1fr_1fr]">
-        <TimerWidget projectId={project._id} onLog={submitTimeLog} />
-        <TimeLogForm projectId={project._id} onSubmit={submitTimeLog} loading={saving} />
+        <TimerWidget projectId={project._id} onLog={submitTimeLog} canEdit={canEdit} />
+        <TimeLogForm projectId={project._id} onSubmit={submitTimeLog} loading={saving} canEdit={canEdit} />
       </section>
 
       <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
@@ -197,7 +238,7 @@ const ProjectDetailPage = () => {
           <table className="min-w-full divide-y divide-white/10">
             <thead className="bg-slate-900/5 dark:bg-white/5">
               <tr>
-                {["Type", "Duration", "Notes", "Date"].map((head) => (
+                {["Member", "Type", "Duration", "Notes", "Date"].map((head) => (
                   <th key={head} className="px-4 py-3 text-left text-sm font-semibold text-slate-600 dark:text-slate-300">
                     {head}
                   </th>
@@ -208,6 +249,7 @@ const ProjectDetailPage = () => {
               {timeLogs.length ? (
                 timeLogs.map((log) => (
                   <tr key={log._id} className="text-sm text-slate-700 dark:text-slate-200">
+                    <td className="px-4 py-3">{log.userId?.name || "Unknown"}</td>
                     <td className="px-4 py-3">{log.type}</td>
                     <td className="px-4 py-3">{log.duration}h</td>
                     <td className="px-4 py-3">{log.notes || "-"}</td>
@@ -216,7 +258,7 @@ const ProjectDetailPage = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="4" className="px-4 py-8 text-center text-slate-500 dark:text-slate-400">
+                  <td colSpan="5" className="px-4 py-8 text-center text-slate-500 dark:text-slate-400">
                     No time logs yet.
                   </td>
                 </tr>

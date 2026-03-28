@@ -5,11 +5,13 @@ import PageShell from "../components/PageShell";
 import ProjectCard from "../components/ProjectCard";
 import ProjectFormModal from "../components/ProjectFormModal";
 import SectionHeading from "../components/SectionHeading";
+import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 import usePortfolioData from "../hooks/usePortfolioData";
 import { projectService } from "../services/api";
 
 const ProjectsPage = () => {
+  const { user } = useAuth();
   const { pushToast } = useToast();
   const { data, loadPortfolio } = usePortfolioData();
   const [modalOpen, setModalOpen] = useState(false);
@@ -65,7 +67,8 @@ const ProjectsPage = () => {
           <button
             type="button"
             onClick={() => setModalOpen(true)}
-            className="inline-flex items-center gap-2 rounded-full bg-teal-500 px-5 py-3 text-sm font-semibold text-white"
+            disabled={user?.teamId && user?.role === "viewer"}
+            className="inline-flex items-center gap-2 rounded-full bg-teal-500 px-5 py-3 text-sm font-semibold text-white disabled:opacity-60"
           >
             <Plus size={16} />
             New Project
@@ -133,6 +136,7 @@ const ProjectsPage = () => {
         onClose={() => setModalOpen(false)}
         onSubmit={handleCreateProject}
         loading={saving}
+        teamMembers={data.teamMembers}
       />
     </PageShell>
   );

@@ -7,6 +7,7 @@ import {
   ChevronRight,
   LayoutDashboard,
   LogOut,
+  Users2,
   UserCircle2,
   Settings,
 } from "lucide-react";
@@ -20,6 +21,7 @@ const navItems = [
   { label: "Analytics", to: "/analytics", icon: BarChart3 },
   { label: "Calendar", to: "/calendar", icon: CalendarDays },
   { label: "AI Insights", to: "/ai-insights", icon: Bot },
+  { label: "Team", to: "/team", icon: Users2 },
   { label: "Profile", to: "/profile", icon: UserCircle2 },
   { label: "Settings", to: "/settings", icon: Settings },
 ];

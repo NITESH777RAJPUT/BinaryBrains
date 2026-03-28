@@ -46,6 +46,11 @@ export const projectService = {
       body: JSON.stringify(payload),
     }),
   getProject: (projectId) => request(`/api/projects/${projectId}`),
+  updateAssignment: (projectId, payload) =>
+    request(`/api/projects/${projectId}/assignment`, {
+      method: "PATCH",
+      body: JSON.stringify(payload),
+    }),
 };
 
 export const timeLogService = {
@@ -61,6 +66,35 @@ export const timeLogService = {
 export const aiService = {
   analyzeProject: (payload) =>
     request("/api/ai/analyze", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+};
+
+export const teamService = {
+  createTeam: (payload) =>
+    request("/api/team/create", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  invite: (payload) =>
+    request("/api/team/invite", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  join: (payload) =>
+    request("/api/team/join", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  getTeam: () => request("/api/team"),
+  removeMember: (payload) =>
+    request("/api/team/remove-member", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
+  updateRole: (payload) =>
+    request("/api/team/update-role", {
       method: "POST",
       body: JSON.stringify(payload),
     }),

@@ -17,12 +17,14 @@ import ProjectCard from "../components/ProjectCard";
 import ProjectFormModal from "../components/ProjectFormModal";
 import SectionHeading from "../components/SectionHeading";
 import StatsCard from "../components/StatsCard";
+import { useAuth } from "../context/AuthContext";
 import { useCurrency } from "../context/CurrencyContext";
 import { useToast } from "../context/ToastContext";
 import usePortfolioData from "../hooks/usePortfolioData";
 import { projectService } from "../services/api";
 
 const DashboardPage = () => {
+  const { user } = useAuth();
   const { pushToast } = useToast();
   const { formatCurrency, formatRate } = useCurrency();
   const { data, loading, loadPortfolio, derived } = usePortfolioData();
@@ -81,6 +83,7 @@ const DashboardPage = () => {
               <button
                 type="button"
                 onClick={() => setModalOpen(true)}
+                disabled={user?.teamId && user?.role === "viewer"}
                 className="rounded-full bg-white px-5 py-3 text-sm font-semibold text-slate-950 transition hover:scale-[1.02]"
               >
                 Create Project
@@ -228,6 +231,7 @@ const DashboardPage = () => {
                 <button
                   type="button"
                   onClick={() => setModalOpen(true)}
+                  disabled={user?.teamId && user?.role === "viewer"}
                   className="rounded-full bg-teal-500 px-5 py-3 font-semibold text-white"
                 >
                   Add first project
@@ -243,6 +247,7 @@ const DashboardPage = () => {
         onClose={() => setModalOpen(false)}
         onSubmit={handleCreateProject}
         loading={saving || loading}
+        teamMembers={data.teamMembers}
       />
     </PageShell>
   );

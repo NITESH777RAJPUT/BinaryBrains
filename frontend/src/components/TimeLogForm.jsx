@@ -6,7 +6,7 @@ const defaultForm = {
   notes: "",
 };
 
-const TimeLogForm = ({ projectId, onSubmit, loading }) => {
+const TimeLogForm = ({ projectId, onSubmit, loading, canEdit = true }) => {
   const [form, setForm] = useState(defaultForm);
 
   const handleSubmit = async (event) => {
@@ -32,6 +32,7 @@ const TimeLogForm = ({ projectId, onSubmit, loading }) => {
             value={form.duration}
             onChange={(event) => setForm((current) => ({ ...current, duration: event.target.value }))}
             required
+            disabled={!canEdit}
             type="number"
             step="0.1"
             min="0.1"
@@ -43,6 +44,7 @@ const TimeLogForm = ({ projectId, onSubmit, loading }) => {
           <select
             value={form.type}
             onChange={(event) => setForm((current) => ({ ...current, type: event.target.value }))}
+            disabled={!canEdit}
             className="mt-2 w-full rounded-2xl border border-white/20 bg-white/70 px-4 py-3 text-slate-900 dark:bg-slate-900/60 dark:text-white"
           >
             <option>Billable</option>
@@ -57,6 +59,7 @@ const TimeLogForm = ({ projectId, onSubmit, loading }) => {
           <input
             value={form.notes}
             onChange={(event) => setForm((current) => ({ ...current, notes: event.target.value }))}
+            disabled={!canEdit}
             className="mt-2 w-full rounded-2xl border border-white/20 bg-white/70 px-4 py-3 text-slate-900 dark:bg-slate-900/60 dark:text-white"
           />
         </label>
@@ -64,14 +67,13 @@ const TimeLogForm = ({ projectId, onSubmit, loading }) => {
 
       <button
         type="submit"
-        disabled={loading}
+        disabled={loading || !canEdit}
         className="mt-5 rounded-full bg-slate-900 px-5 py-3 font-semibold text-white dark:bg-white dark:text-slate-900"
       >
-        {loading ? "Saving..." : "Add Time Entry"}
+        {canEdit ? (loading ? "Saving..." : "Add Time Entry") : "Viewer access"}
       </button>
     </form>
   );
 };
 
 export default TimeLogForm;
-

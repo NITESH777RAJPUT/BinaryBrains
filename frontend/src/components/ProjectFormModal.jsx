@@ -6,13 +6,14 @@ const initialState = {
   title: "",
   client: "",
   type: "",
+  assignedTo: "",
   pricingType: "Fixed",
   price: "",
   estimatedHours: "",
   thresholdRate: "",
 };
 
-const ProjectFormModal = ({ isOpen, onClose, onSubmit, loading }) => {
+const ProjectFormModal = ({ isOpen, onClose, onSubmit, loading, teamMembers = [] }) => {
   const [form, setForm] = useState(initialState);
   const { currency, symbol, convertToBaseAmount } = useCurrency();
 
@@ -24,6 +25,7 @@ const ProjectFormModal = ({ isOpen, onClose, onSubmit, loading }) => {
     event.preventDefault();
     await onSubmit({
       ...form,
+      assignedTo: form.assignedTo || undefined,
       price: Number(convertToBaseAmount(form.price)),
       estimatedHours: Number(form.estimatedHours),
       thresholdRate: Number(convertToBaseAmount(form.thresholdRate)),
@@ -94,6 +96,23 @@ const ProjectFormModal = ({ isOpen, onClose, onSubmit, loading }) => {
                 >
                   <option value="Fixed">Fixed</option>
                   <option value="Hourly">Hourly</option>
+                </select>
+              </label>
+
+              <label className="premium-label">
+                Assigned To
+                <select
+                  name="assignedTo"
+                  value={form.assignedTo}
+                  onChange={handleChange}
+                  className="premium-input"
+                >
+                  <option value="">Auto-assign to creator</option>
+                  {teamMembers.map((member) => (
+                    <option key={member._id || member.id} value={member._id || member.id}>
+                      {member.name} ({member.role})
+                    </option>
+                  ))}
                 </select>
               </label>
             </div>

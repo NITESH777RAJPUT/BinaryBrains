@@ -12,6 +12,8 @@ import SignupPage from "./pages/SignupPage";
 import DashboardPage from "./pages/DashboardPage";
 import ProjectDetailPage from "./pages/ProjectDetailPage";
 import SettingsPage from "./pages/SettingsPage";
+import TeamJoinPage from "./pages/TeamJoinPage";
+import TeamPage from "./pages/TeamPage";
 
 function App() {
   const location = useLocation();
@@ -35,6 +37,8 @@ function App() {
           <Route path="/analytics" element={<AnalyticsPage />} />
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/ai-insights" element={<AIInsightsPage />} />
+          <Route path="/team" element={<TeamPage />} />
+          <Route path="/team/join/:token" element={<TeamJoinPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/settings" element={<SettingsPage />} />
         </Route>

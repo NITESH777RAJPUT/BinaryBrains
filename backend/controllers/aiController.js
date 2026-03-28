@@ -1,5 +1,6 @@
 import Project from "../models/Project.js";
 import TimeLog from "../models/TimeLog.js";
+import { buildProjectScope } from "../middleware/authMiddleware.js";
 import { calculateProjectMetrics } from "../utils/analytics.js";
 
 const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
@@ -70,12 +71,12 @@ export const analyzeProjectData = async (req, res) => {
     return res.status(400).json({ message: "projectId is required" });
   }
 
-  const project = await Project.findOne({ _id: projectId, userId: req.user._id });
+  const project = await Project.findOne({ _id: projectId, ...buildProjectScope(req.user) });
   if (!project) {
     return res.status(404).json({ message: "Project not found" });
   }
 
-  const timeLogs = await TimeLog.find({ projectId }).sort({ createdAt: -1 });
+  const timeLogs = await TimeLog.find({ projectId }).populate("userId", "name email").sort({ createdAt: -1 });
   const metrics = calculateProjectMetrics(project, timeLogs);
 
   if (!process.env.OPENROUTER_API_KEY) {
@@ -99,6 +100,7 @@ ${JSON.stringify(
     timeLogs.map((log) => ({
       duration: log.duration,
       type: log.type,
+      user: log.userId?.name || "Unknown",
       createdAt: log.createdAt,
       notes: log.notes,
     })),

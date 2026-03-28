@@ -44,6 +44,10 @@ const ProjectCard = ({ item }) => {
           </div>
         </div>
 
+        <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-gray-300">
+          Assigned to: <span className="font-semibold text-white">{project.assignedTo?.name || "Unassigned"}</span>
+        </div>
+
         <div className="mt-5">
           <div className="mb-2 flex items-center justify-between text-xs text-gray-300">
             <span>Progress</span>

@@ -3,7 +3,7 @@ import useTimer from "../hooks/useTimer";
 
 const TIMER_TYPES = ["Billable", "Calls", "Emails", "Revisions", "Admin"];
 
-const TimerWidget = ({ projectId, onLog }) => {
+const TimerWidget = ({ projectId, onLog, canEdit = true }) => {
   const { seconds, isRunning, start, stop, reset } = useTimer();
   const [type, setType] = useState("Billable");
 
@@ -43,6 +43,7 @@ const TimerWidget = ({ projectId, onLog }) => {
                   key={timerType}
                   type="button"
                   onClick={() => setType(timerType)}
+                  disabled={!canEdit}
                   className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
                     isActive
                       ? "bg-teal-500 text-white shadow-lg shadow-teal-500/20"
@@ -56,8 +57,8 @@ const TimerWidget = ({ projectId, onLog }) => {
           </div>
           <div className="flex flex-wrap items-center gap-3">
           {!isRunning ? (
-            <button type="button" onClick={start} className="rounded-full bg-teal-500 px-5 py-3 font-semibold text-white">
-              Start
+            <button type="button" onClick={start} disabled={!canEdit} className="rounded-full bg-teal-500 px-5 py-3 font-semibold text-white disabled:opacity-60">
+              {canEdit ? "Start" : "Viewer access"}
             </button>
           ) : (
             <button type="button" onClick={handleStop} className="rounded-full bg-rose-500 px-5 py-3 font-semibold text-white">

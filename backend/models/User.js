@@ -27,6 +27,17 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    teamId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Team",
+      default: null,
+      index: true,
+    },
+    role: {
+      type: String,
+      enum: ["admin", "member", "viewer"],
+      default: "member",
+    },
   },
   { timestamps: true }
 );

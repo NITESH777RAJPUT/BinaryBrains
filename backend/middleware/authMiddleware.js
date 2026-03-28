@@ -1,7 +1,10 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
-const protect = async (req, res, next) => {
+export const buildProjectScope = (user) =>
+  user.teamId ? { teamId: user.teamId } : { userId: user._id, teamId: null };
+
+export const protect = async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -23,5 +26,24 @@ const protect = async (req, res, next) => {
   }
 };
 
-export default protect;
+export const requireTeam = (req, res, next) => {
+  if (!req.user?.teamId) {
+    return res.status(400).json({ message: "Join or create a team first" });
+  }
 
+  next();
+};
+
+export const requireRole = (...roles) => (req, res, next) => {
+  if (!req.user?.teamId) {
+    return next();
+  }
+
+  if (!roles.includes(req.user.role)) {
+    return res.status(403).json({ message: "You do not have access to this action" });
+  }
+
+  next();
+};
+
+export default protect;

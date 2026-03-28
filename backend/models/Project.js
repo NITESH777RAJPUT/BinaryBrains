@@ -8,6 +8,17 @@ const projectSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
+    teamId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Team",
+      default: null,
+      index: true,
+    },
+    assignedTo: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
+    },
     title: {
       type: String,
       required: true,
@@ -48,4 +59,3 @@ const projectSchema = new mongoose.Schema(
 );
 
 export default mongoose.model("Project", projectSchema);
-
